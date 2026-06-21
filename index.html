@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -144,8 +143,6 @@ height:100%;
 z-index:20;
 }
 </style>
-<script src="/scramjet.config.js"></script>
-<script src="/scram/scramjet.code.js"></script>
 </head>
 <body>
 <div id="stars"></div>
@@ -182,18 +179,6 @@ z-index:20;
 </div>
 </div>
 <script>
-if (typeof window.__scramjet$config === "undefined") {
-    window.__scramjet$config = {
-        prefix: '/scram/service/',
-        codec: {
-            encodeUrl: (url) => btoa(url),
-            decodeUrl: (url) => atob(url)
-        },
-        config: '/scramjet.config.js',
-        worker: '/sw.js'
-    };
-}
-
 const stars=document.getElementById("stars");
 for(let i=0;i<180;i++){
 const s=document.createElement("div");
@@ -216,10 +201,6 @@ sidebar.classList.remove("open");
 }
 });
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { scope: '/scram/' });
-}
-
 const searchInput = document.querySelector(".search");
 const searchBtn = document.querySelector(".search-btn");
 
@@ -232,7 +213,7 @@ function launchProxy() {
         url = "https://" + url;
     }
     
-    window.location.href = window.__scramjet$config.prefix + window.__scramjet$config.codec.encodeUrl(url);
+    window.location.href = "/scram/service?url=" + btoa(url);
 }
 searchBtn.addEventListener("click", launchProxy);
 searchInput.addEventListener("keydown", (e) => {

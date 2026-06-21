@@ -11,10 +11,10 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
-app.use('/scram', express.static(scramjetPath));
+app.use('/scram/', express.static(scramjetPath));
 app.use(express.static(__dirname));
 
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'node:http';
 import { scramjetPath } from '@mercuryworkshop/scramjet/path';
-import { WispServer } from '@mercuryworkshop/wisp-js/server';
+import { wispServer } from '@mercuryworkshop/wisp-js/server';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -12,10 +12,6 @@ const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 3000;
 
-const wisp = new WispServer({
-    logger: () => {}
-});
-
 app.use('/scram', express.static(scramjetPath));
 app.use(express.static(__dirname));
 
@@ -25,7 +21,7 @@ app.get('/', (req, res) => {
 
 server.on('upgrade', (req, socket, head) => {
     if (req.url.startsWith('/wisp/')) {
-        wisp.handleUpgrade(req, socket, head);
+        wispServer(req, socket, head);
     } else {
         socket.destroy();
     }

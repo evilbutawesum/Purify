@@ -19,8 +19,14 @@ app.get('/', (req, res) => {
 
 app.get('/scram/service', async (req, res) => {
     try {
-        const targetUrl = req.query.url;
+        let targetUrl = req.query.url;
         if (!targetUrl) return res.status(400).send("No URL provided.");
+
+        targetUrl = targetUrl.trim();
+
+        if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+            targetUrl = 'https://' + targetUrl;
+        }
 
         const response = await axios({
             method: 'get',

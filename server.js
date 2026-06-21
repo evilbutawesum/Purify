@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import https from 'node:https';
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,21 +17,25 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/scram/service', (req, res) => {
+app.get('/scram/service', async (req, res) => {
     try {
-        const encodedUrl = req.query.url;
-        if (!encodedUrl) return res.status(400).send("No URL provided.");
-        
-        const targetUrl = atob(encodedUrl);
-        
-        https.get(targetUrl, (proxyRes) => {
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
-            proxyRes.pipe(res);
-        }).on('error', (err) => {
-            res.status(500).send("Error fetching site: " + err.message);
+        const targetUrl = req.query.url;
+        if (!targetUrl) return res.status(400).send("No URL provided.");
+
+        const response = await axios({
+            method: 'get',
+            url: targetUrl,
+            responseType: 'stream',
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            },
+            validateStatus: () => true
         });
-    } catch (e) {
-        res.status(400).send("Invalid URL tracking requested.");
+
+        res.writeHead(response.status, response.headers);
+        response.data.pipe(res);
+    } catch (err) {
+        res.status(500).send("Error fetching site: " + err.message);
     }
 });
 

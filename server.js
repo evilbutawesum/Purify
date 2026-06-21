@@ -17,9 +17,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/scram/service/*', (req, res) => {
+app.get('/scram/service', (req, res) => {
     try {
-        const encodedUrl = req.params[0];
+        const encodedUrl = req.query.url;
+        if (!encodedUrl) return res.status(400).send("No URL provided.");
+        
         const targetUrl = atob(encodedUrl);
         
         https.get(targetUrl, (proxyRes) => {
@@ -29,7 +31,7 @@ app.get('/scram/service/*', (req, res) => {
             res.status(500).send("Error fetching site: " + err.message);
         });
     } catch (e) {
-        res.status(400).send("Invalid URL requested.");
+        res.status(400).send("Invalid URL tracking requested.");
     }
 });
 

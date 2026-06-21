@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@mercuryworkshop/scramjet": "^2.0.0-alpha",
-    "@mercuryworkshop/wisp-js": "^1.1.0",
+    "@mercuryworkshop/wisp-js": "*",
     "express": "^4.19.2"
   }
 }

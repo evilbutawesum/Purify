@@ -19,12 +19,16 @@ app.get('/', (req, res) => {
 
 app.get('/scram/service', async (req, res) => {
     try {
-        let inputQuery = req.query.q;
+        let inputQuery = req.query.q || req.query.url;
         if (!inputQuery) return res.status(400).send("No search query provided.");
 
         inputQuery = inputQuery.trim();
-        let targetUrl = inputQuery;
 
+        if (inputQuery.includes('google.comimtured')) {
+            inputQuery = inputQuery.replace('google.comimtured', 'google.com');
+        }
+
+        let targetUrl = inputQuery;
         if (!inputQuery.includes('.') || inputQuery.includes(' ')) {
             targetUrl = 'https://google.com' + encodeURIComponent(inputQuery);
         } else if (!inputQuery.startsWith('http://') && !inputQuery.startsWith('https://')) {

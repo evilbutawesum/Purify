@@ -1,11 +1,12 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Purify</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://googleapis.com" rel="stylesheet">
+<link rel="preconnect" href="https://googleapis.com">
+<link href="https://googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{
 margin:0;
@@ -143,8 +144,8 @@ height:100%;
 z-index:20;
 }
 </style>
+<script src="/scramjet.config.js"></script>
 <script src="/scram/scramjet.code.js"></script>
-<script src="/scram/scramjet.config.js"></script>
 </head>
 <body>
 <div id="stars"></div>
@@ -181,6 +182,18 @@ z-index:20;
 </div>
 </div>
 <script>
+if (typeof window.__scramjet$config === "undefined") {
+    window.__scramjet$config = {
+        prefix: '/scram/service/',
+        codec: {
+            encodeUrl: (url) => btoa(url),
+            decodeUrl: (url) => atob(url)
+        },
+        config: '/scramjet.config.js',
+        worker: '/sw.js'
+    };
+}
+
 const stars=document.getElementById("stars");
 for(let i=0;i<180;i++){
 const s=document.createElement("div");
@@ -219,11 +232,7 @@ function launchProxy() {
         url = "https://" + url;
     }
     
-    if (typeof __scramjet$config !== "undefined") {
-        window.location.href = __scramjet$config.prefix + __scramjet$config.encodeUrl(url);
-    } else {
-        alert("yo try again in like 2 secs");
-    }
+    window.location.href = window.__scramjet$config.prefix + window.__scramjet$config.codec.encodeUrl(url);
 }
 searchBtn.addEventListener("click", launchProxy);
 searchInput.addEventListener("keydown", (e) => {

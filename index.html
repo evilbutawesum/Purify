@@ -203,8 +203,13 @@ sidebar.classList.remove("open");
 }
 });
 
+let swRegistration = null;
+
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { scope: '/scram/' });
+    navigator.serviceWorker.register('/sw.js', { scope: '/scram/' })
+        .then(reg => {
+            swRegistration = reg;
+        });
 }
 
 const searchInput = document.querySelector(".search");
@@ -218,10 +223,11 @@ function launchProxy() {
     } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
         url = "https://" + url;
     }
+    
     if (typeof __scramjet$config !== "undefined") {
         window.location.href = __scramjet$config.prefix + __scramjet$config.encodeUrl(url);
     } else {
-        window.location.href = "/scram/route?url=" + encodeURIComponent(url);
+        window.location.href = "/scram/" + btoa(url);
     }
 }
 searchBtn.addEventListener("click", launchProxy);

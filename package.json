@@ -1,0 +1,13 @@
+{
+  "name": "purify-unblocker",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@mercuryworkshop/scramjet": "^2.0.0-alpha",
+    "express": "^4.19.2"
+  }
+}

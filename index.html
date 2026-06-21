@@ -213,7 +213,7 @@ function launchProxy() {
         url = "https://" + url;
     }
     
-    window.location.href = "/scram/service?url=" + btoa(url);
+    window.location.href = "/scram/service?url=" + encodeURIComponent(url);
 }
 searchBtn.addEventListener("click", launchProxy);
 searchInput.addEventListener("keydown", (e) => {

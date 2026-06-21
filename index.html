@@ -207,13 +207,14 @@ const searchBtn = document.querySelector(".search-btn");
 function launchProxy() {
     let url = searchInput.value.trim();
     if (!url) return;
+    
     if (!url.includes(".") || url.includes(" ")) {
         url = "https://google.com" + encodeURIComponent(url);
     } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
         url = "https://" + url;
     }
     
-    window.location.href = "/scram/service?url=" + encodeURIComponent(url);
+    window.location.href = "https://allorigins.win" + encodeURIComponent(url);
 }
 searchBtn.addEventListener("click", launchProxy);
 searchInput.addEventListener("keydown", (e) => {

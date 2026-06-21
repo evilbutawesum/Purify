@@ -19,13 +19,16 @@ app.get('/', (req, res) => {
 
 app.get('/scram/service', async (req, res) => {
     try {
-        let targetUrl = req.query.url;
-        if (!targetUrl) return res.status(400).send("No URL provided.");
+        let inputQuery = req.query.q;
+        if (!inputQuery) return res.status(400).send("No search query provided.");
 
-        targetUrl = targetUrl.trim();
+        inputQuery = inputQuery.trim();
+        let targetUrl = inputQuery;
 
-        if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-            targetUrl = 'https://' + targetUrl;
+        if (!inputQuery.includes('.') || inputQuery.includes(' ')) {
+            targetUrl = 'https://google.com' + encodeURIComponent(inputQuery);
+        } else if (!inputQuery.startsWith('http://') && !inputQuery.startsWith('https://')) {
+            targetUrl = 'https://' + inputQuery;
         }
 
         const response = await axios({
@@ -41,7 +44,7 @@ app.get('/scram/service', async (req, res) => {
         res.writeHead(response.status, response.headers);
         response.data.pipe(res);
     } catch (err) {
-        res.status(500).send("Error fetching site: " + err.message);
+        res.status(500).send("Proxy error: " + err.message);
     }
 });
 

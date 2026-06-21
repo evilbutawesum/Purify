@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Purify</title>
-<link rel="preconnect" href="https://googleapis.com">
-<link href="https://googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://googleapis.com" rel="stylesheet">
 <style>
 *{
 margin:0;
@@ -203,13 +203,8 @@ sidebar.classList.remove("open");
 }
 });
 
-let swRegistration = null;
-
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { scope: '/scram/' })
-        .then(reg => {
-            swRegistration = reg;
-        });
+    navigator.serviceWorker.register('/sw.js', { scope: '/scram/' });
 }
 
 const searchInput = document.querySelector(".search");
@@ -227,7 +222,7 @@ function launchProxy() {
     if (typeof __scramjet$config !== "undefined") {
         window.location.href = __scramjet$config.prefix + __scramjet$config.encodeUrl(url);
     } else {
-        window.location.href = "/scram/" + btoa(url);
+        alert("yo try again in like 2 secs");
     }
 }
 searchBtn.addEventListener("click", launchProxy);

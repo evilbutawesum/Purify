@@ -29,7 +29,7 @@ overflow:hidden;
 position:absolute;
 width:3px;
 height:3px;
-background:white;
+background:#fff;
 border-radius:50%;
 opacity:0.8;
 animation:move 25s linear infinite;
@@ -48,12 +48,10 @@ justify-content:center;
 .logo{
 font-size:11rem;
 font-weight:700;
-text-align:center;
 letter-spacing:-2px;
 }
 .subtitle{
 margin-top:18px;
-text-align:center;
 font-size:1.2rem;
 }
 .search-row{
@@ -89,7 +87,7 @@ display:flex;
 flex-direction:column;
 align-items:center;
 cursor:pointer;
-transition:0.2s;
+transition:.2s;
 }
 .shortcut:hover{
 transform:scale(1.05);
@@ -117,7 +115,7 @@ width:240px;
 height:100%;
 background:rgba(20,20,20,.97);
 backdrop-filter:blur(10px);
-transition:0.25s ease;
+transition:.25s ease;
 display:flex;
 flex-direction:column;
 padding-top:60px;
@@ -132,7 +130,7 @@ font-size:1.3rem;
 cursor:pointer;
 }
 .nav-btn:hover{
-background:rgba(255,255,255,0.1);
+background:rgba(255,255,255,.1);
 }
 .edge-zone{
 position:fixed;
@@ -142,74 +140,226 @@ width:20px;
 height:100%;
 z-index:20;
 }
-#proxy-view{
+#browser-container{
 position:fixed;
 top:0;
 left:0;
 width:100vw;
 height:100vh;
-border:none;
+background:#000;
 display:none;
+flex-direction:column;
 z-index:99;
+}
+#tab-bar{
+background:#141414;
+display:flex;
+align-items:center;
+padding:10px 10px 0 10px;
+gap:5px;
+border-bottom:1px solid #333;
+}
+.tab{
+background:#222;
+color:#aaa;
+padding:8px 16px;
+border-radius:10px 10px 0 0;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:10px;
+font-size:.95rem;
+max-width:150px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+.tab.active{
+background:#000;
+color:#fff;
+border:1px solid #333;
+border-bottom:none;
+}
+.close-tab-btn{
+font-size:.8rem;
+cursor:pointer;
+color:#ff4444;
+}
+#add-tab-btn{
+background:none;
+border:none;
+color:#fff;
+font-size:1.5rem;
+cursor:pointer;
+padding:0 10px;
+margin-bottom:5px;
+}
+#browser-controls{
+background:#000;
+display:flex;
+padding:8px;
+gap:10px;
+align-items:center;
+border-bottom:1px solid #222;
+}
+.control-btn{
+background:#222;
+border:none;
+color:#fff;
+padding:8px 12px;
+border-radius:8px;
+cursor:pointer;
+}
+#browser-url-bar{
+flex:1;
+height:36px;
+border-radius:8px;
+border:1px solid #333;
+background:#111;
+color:#fff;
+padding:0 12px;
+font-size:1rem;
+outline:none;
+}
+#frames-viewport{
+flex:1;
+position:relative;
 background:#fff;
 }
-#close-view{
+.proxy-frame{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+border:none;
+background:#fff;
+display:none;
+}
+.proxy-frame.active{
+display:block;
+}
+#settings-panel{
 position:fixed;
-top:20px;
-right:20px;
-z-index:100;
-background:rgba(0,0,0,0.8);
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:500px;
+background:#141414;
+border:1px solid #333;
+border-radius:20px;
+padding:25px;
+z-index:200;
+display:none;
+}
+.settings-title{
+font-size:1.8rem;
+font-weight:700;
+margin-bottom:15px;
+}
+.settings-group{
+margin-bottom:15px;
+}
+.settings-label{
+display:block;
+margin-bottom:5px;
+font-size:1rem;
+color:#aaa;
+}
+.settings-input{
+width:100%;
+padding:10px;
+background:#222;
+border:1px solid #333;
 color:#fff;
-border:1px solid #fff;
+border-radius:10px;
+outline:none;
+font-size:1rem;
+}
+.settings-textarea{
+width:100%;
+height:80px;
+padding:10px;
+background:#222;
+border:1px solid #333;
+color:#fff;
+border-radius:10px;
+outline:none;
+font-family:monospace;
+resize:none;
+}
+.save-settings-btn{
+background:#fff;
+color:#000;
+border:none;
 padding:10px 20px;
 border-radius:10px;
 cursor:pointer;
-display:none;
-font-weight:600;
+font-weight:700;
+margin-top:10px;
 }
 </style>
 </head>
 <body>
-
 <div id="stars"></div>
 <div class="edge-zone"></div>
-
-<button id="close-view">✕ Close Proxy</button>
-<iframe id="proxy-view"></iframe>
-
+<div id="browser-container">
+    <div id="tab-bar">
+        <div id="tabs-wrapper" style="display:flex;gap:5px;"></div>
+        <button id="add-tab-btn">+</button>
+    </div>
+    <div id="browser-controls">
+        <button class="control-btn" id="back-nav-btn">◀</button>
+        <button class="control-btn" id="refresh-nav-btn">⟳</button>
+        <input id="browser-url-bar" placeholder="Enter URL or search DuckDuckGo...">
+        <button class="control-btn" id="close-browser-btn" style="background:#ff4444;">✕ Exit Browser</button>
+    </div>
+    <div id="frames-viewport"></div>
+</div>
 <div class="sidebar" id="sidebar">
-<div class="nav-btn" id="home-nav">🏠 Home</div>
-<div class="nav-btn">🌐 Proxy</div>
-<div class="nav-btn">🎮 Games</div>
-<div class="nav-btn">📱 Apps</div>
-<div class="nav-btn">🤖 AI</div>
-<div class="nav-btn">🥭 Cool Stuff</div>
-<div class="nav-btn">⚙️ Settings</div>
+    <div class="nav-btn" id="home-menu-btn">🏠 Home</div>
+    <div class="nav-btn" id="proxy-menu-btn">🌐 Proxy</div>
+    <div class="nav-btn">🎮 Games</div>
+    <div class="nav-btn">📱 Apps</div>
+    <div class="nav-btn">🤖 AI</div>
+    <div class="nav-btn">🥭 Cool Stuff</div>
+    <div class="nav-btn" id="settings-menu-btn">⚙️ Settings</div>
 </div>
-
 <div class="main" id="main-ui">
-<div class="logo">Purify</div>
-<div class="subtitle">Freedom for every student out there.</div>
-<div class="search-row">
-<input class="search" placeholder="Search...">
-<button class="search-btn">🔍</button>
+    <div class="logo">Purify</div>
+    <div class="subtitle">Freedom for every student out there.</div>
+    <div class="search-row">
+        <input class="search" placeholder="Search DuckDuckGo or type URL...">
+        <button class="search-btn">🔍</button>
+    </div>
+    <div class="shortcuts">
+        <div class="shortcut">
+            <div class="icon">🎮</div>
+            <div class="label">Games</div>
+        </div>
+        <div class="shortcut">
+            <div class="icon">📱</div>
+            <div class="label">Apps</div>
+        </div>
+        <div class="shortcut">
+            <div class="icon">🤖</div>
+            <div class="label">AI</div>
+        </div>
+    </div>
 </div>
-<div class="shortcuts">
-<div class="shortcut">
-<div class="icon">🎮</div>
-<div class="label">Games</div>
+<div id="settings-panel">
+    <div class="settings-title">Purify Configurations</div>
+    <div class="settings-group">
+        <label class="settings-label">Inject Custom User Script (JavaScript)</label>
+        <textarea class="settings-textarea" id="script-input" placeholder="console.log('Script running!');"></textarea>
+    </div>
+    <div class="settings-group">
+        <label class="settings-label">Save Quick Bookmarklet Link</label>
+        <input class="settings-input" id="bookmarklet-input" placeholder="javascript:alert(document.title);">
+    </div>
+    <button class="save-settings-btn" id="save-config-btn">Save Changes</button>
+    <button class="save-settings-btn" id="close-config-btn" style="background:none;color:#ff4444;border:1px solid #ff4444;">Close</button>
 </div>
-<div class="shortcut">
-<div class="icon">📱</div>
-<div class="label">Apps</div>
-</div>
-<div class="shortcut">
-<div class="icon">🤖</div>
-<div class="label">AI</div>
-</div>
-</div>
-</div>
-
 <script>
 const stars=document.getElementById("stars");
 for(let i=0;i<180;i++){
@@ -222,51 +372,134 @@ s.style.height=s.style.width;
 s.style.animationDuration=(15+Math.random()*30)+"s";
 stars.appendChild(s);
 }
-
 const sidebar=document.getElementById("sidebar");
 const edge=document.querySelector(".edge-zone");
 edge.addEventListener("mouseenter",()=>sidebar.classList.add("open"));
 sidebar.addEventListener("mouseleave",()=>sidebar.classList.remove("open"));
 edge.addEventListener("touchstart",()=>sidebar.classList.add("open"));
-
 document.addEventListener("touchstart",(e)=>{
-if(!sidebar.contains(e.target) && !edge.contains(e.target)){
+if(!sidebar.contains(e.target)&&!edge.contains(e.target)){
 sidebar.classList.remove("open");
 }
 });
-
-const searchInput = document.querySelector(".search");
-const searchBtn = document.querySelector(".search-btn");
-const proxyView = document.getElementById("proxy-view");
-const closeView = document.getElementById("close-view");
-const mainUi = document.getElementById("main-ui");
-const homeNav = document.getElementById("home-nav");
-
-function launchProxy() {
-    let queryValue = searchInput.value.trim();
-    if (!queryValue) return;
-    
-    mainUi.style.display = "none";
-    proxyView.style.display = "block";
-    closeView.style.display = "block";
-    
-    proxyView.src = "/scram/service?q=" + encodeURIComponent(queryValue);
+const searchInput=document.querySelector(".search"),searchBtn=document.querySelector(".search-btn"),browserContainer=document.getElementById("browser-container"),tabsWrapper=document.getElementById("tabs-wrapper"),framesViewport=document.getElementById("frames-viewport"),browserUrlBar=document.getElementById("browser-url-bar"),addTabBtn=document.getElementById("add-tab-btn"),mainUi=document.getElementById("main-ui"),settingsPanel=document.getElementById("settings-panel");
+let activeTabId=null,tabCount=0;
+function formatUrl(t){
+let e=t.trim();
+if(!e)return"about:blank";
+e=e.replace(/imtured/g,"").replace(/say/g,"").trim();
+if(e.includes(".")&&!e.includes(" ")||e.startsWith("http://")||e.startsWith("https://")){
+if(!e.startsWith("http://")&&!e.startsWith("https://"))e="https://"+e;
+}else{
+e="https://duckduckgo.com"+encodeURIComponent(e);
 }
-
-function closeProxyWindow() {
-    proxyView.src = "about:blank";
-    proxyView.style.display = "none";
-    closeView.style.display = "none";
-    mainUi.style.display = "flex";
+return e;
 }
-
-searchBtn.addEventListener("click", launchProxy);
-searchInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") launchProxy();
+function createNewTab(t="about:blank"){
+tabCount++;
+const e="tab-"+tabCount,n=formatUrl(t),a=document.createElement("div");
+a.className="tab";
+a.id="btn-"+e;
+a.innerHTML=`<span>Tab ${tabCount}</span> <span class="close-tab-btn" data-id="${e}">✕</span>`;
+const r=document.createElement("iframe");
+r.className="proxy-frame";
+r.id="frame-"+e;
+r.src=n;
+r.addEventListener("load",()=>{
+try{
+const t=localStorage.getItem("purify_script");
+if(t)r.contentWindow.eval(t);
+}catch(t){}
 });
-
-closeView.addEventListener("click", closeProxyWindow);
-homeNav.addEventListener("click", closeProxyWindow);
+tabsWrapper.appendChild(a);
+framesViewport.appendChild(r);
+a.addEventListener("click",t=>{
+if(!t.target.classList.contains("close-tab-btn"))switchActiveTab(e);
+});
+a.querySelector(".close-tab-btn").addEventListener("click",t=>{
+t.stopPropagation();
+removeTab(e);
+});
+switchActiveTab(e);
+}
+function switchActiveTab(t){
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+document.querySelectorAll(".proxy-frame").forEach(t=>t.classList.remove("active"));
+const e=document.getElementById("btn-"+t),navigatorFrame=document.getElementById("frame-"+t);
+if(e&&navigatorFrame){
+e.classList.add("active");
+navigatorFrame.classList.add("active");
+activeTabId=t;
+if(navigatorFrame.src!=="about:blank")browserUrlBar.value=navigatorFrame.src;
+}
+}
+function removeTab(t){
+const e=document.getElementById("btn-"+t),n=document.getElementById("frame-"+t);
+if(e)e.remove();
+if(n)n.remove();
+const a=document.querySelectorAll(".tab");
+if(a.length===0){
+closeBrowser();
+}else if(activeTabId===t){
+const t=a[a.length-1].id.replace("btn-","");
+switchActiveTab(t);
+}
+}
+function launchBrowser(t){
+mainUi.style.display="none";
+browserContainer.style.display="flex";
+createNewTab(t);
+}
+function closeBrowser(){
+browserContainer.style.display="none";
+mainUi.style.display="flex";
+tabsWrapper.innerHTML="";
+framesViewport.innerHTML="";
+activeTabId=null;
+}
+searchBtn.addEventListener("click",()=>launchBrowser(searchInput.value));
+searchInput.addEventListener("keydown",t=>{
+if(t.key==="Enter")launchBrowser(searchInput.value);
+});
+addTabBtn.addEventListener("click",()=>createNewTab("https://duckduckgo.com"));
+document.getElementById("close-browser-btn").addEventListener("click",closeBrowser);
+document.getElementById("home-menu-btn").addEventListener("click",closeBrowser);
+document.getElementById("proxy-menu-btn").addEventListener("click",()=>launchBrowser("https://duckduckgo.com"));
+document.getElementById("refresh-nav-btn").addEventListener("click",()=>{
+const t=document.getElementById("frame-"+activeTabId);
+if(t)t.src=t.src;
+});
+document.getElementById("back-nav-btn").addEventListener("click",()=>{
+const t=document.getElementById("frame-"+activeTabId);
+if(t){
+try{t.contentWindow.history.back();}catch(e){t.src=t.src;}
+}
+});
+browserUrlBar.addEventListener("keydown",t=>{
+if(t.key==="Enter"){
+const e=document.getElementById("frame-"+activeTabId);
+if(e)e.src=formatUrl(browserUrlBar.value);
+}
+});
+document.getElementById("settings-menu-btn").addEventListener("click",()=>{
+settingsPanel.style.display="block";
+sidebar.classList.remove("open");
+});
+document.getElementById("close-config-btn").addEventListener("click",()=>{
+settingsPanel.style.display="none";
+});
+document.getElementById("save-config-btn").addEventListener("click",()=>{
+const t=document.getElementById("script-input").value,e=document.getElementById("bookmarklet-input").value;
+localStorage.setItem("purify_script",t);
+if(e.startsWith("javascript:"))localStorage.setItem("purify_bookmarklet",e);
+settingsPanel.style.display="none";
+alert("Configurations Saved!");
+});
+window.addEventListener("DOMContentLoaded",()=>{
+document.getElementById("script-input").value=localStorage.getItem("purify_script")||"";
+document.getElementById("bookmarklet-input").value=localStorage.getItem("purify_bookmarklet")||"";
+});
 </script>
 </body>
 </html>
+ 

@@ -24,8 +24,15 @@ app.get('/scram/service', async (req, res) => {
 
         inputQuery = inputQuery.trim();
 
-        if (inputQuery.includes('google.comimtured')) {
-            inputQuery = inputQuery.replace('google.comimtured', 'google.com');
+        if (inputQuery.endsWith('say')) {
+            inputQuery = inputQuery.slice(0, -3).trim();
+        }
+        if (inputQuery.endsWith('imtured')) {
+            inputQuery = inputQuery.slice(0, -7).trim();
+        }
+
+        if (inputQuery.includes('google.com') && !inputQuery.includes('search') && !inputQuery.includes('?')) {
+            inputQuery = 'google.com';
         }
 
         let targetUrl = inputQuery;

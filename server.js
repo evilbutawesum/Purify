@@ -22,24 +22,30 @@ app.get('/scram/service', async (req, res) => {
         let inputQuery = req.query.q || req.query.url;
         if (!inputQuery) return res.status(400).send("No search query provided.");
 
-        inputQuery = inputQuery.trim();
+        inputQuery = inputQuery.trim().toLowerCase();
 
-        if (inputQuery.endsWith('say')) {
-            inputQuery = inputQuery.slice(0, -3).trim();
-        }
-        if (inputQuery.endsWith('imtured')) {
-            inputQuery = inputQuery.slice(0, -7).trim();
-        }
+        // Strip out common browser memory text leaks
+        inputQuery = inputQuery.replace('imtured', '').replace('say', '').trim();
 
-        if (inputQuery.includes('google.com') && !inputQuery.includes('search') && !inputQuery.includes('?')) {
-            inputQuery = 'google.com';
+        // If the query is empty or broken after scrubbing, default to a safe search
+        if (!inputQuery || inputQuery === 'google.com') {
+            inputQuery = 'https://google.com';
         }
 
         let targetUrl = inputQuery;
+
+        // Formulate a proper network address
         if (!inputQuery.includes('.') || inputQuery.includes(' ')) {
-            targetUrl = 'https://google.com' + encodeURIComponent(inputQuery);
+            targetUrl = 'https://google.com/search?q=' + encodeURIComponent(inputQuery);
         } else if (!inputQuery.startsWith('http://') && !inputQuery.startsWith('https://')) {
             targetUrl = 'https://' + inputQuery;
+        }
+
+        // Final safety check to prevent Axios from crashing on a bad URL format
+        try {
+            new URL(targetUrl);
+        } catch (_) {
+            targetUrl = 'https://google.com/search?q=' + encodeURIComponent(inputQuery);
         }
 
         const response = await axios({

@@ -142,13 +142,43 @@ width:20px;
 height:100%;
 z-index:20;
 }
+#proxy-view{
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+border:none;
+display:none;
+z-index:99;
+background:#fff;
+}
+#close-view{
+position:fixed;
+top:20px;
+right:20px;
+z-index:100;
+background:rgba(0,0,0,0.8);
+color:#fff;
+border:1px solid #fff;
+padding:10px 20px;
+border-radius:10px;
+cursor:pointer;
+display:none;
+font-weight:600;
+}
 </style>
 </head>
 <body>
+
 <div id="stars"></div>
 <div class="edge-zone"></div>
+
+<button id="close-view">✕ Close Proxy</button>
+<iframe id="proxy-view"></iframe>
+
 <div class="sidebar" id="sidebar">
-<div class="nav-btn">🏠 Home</div>
+<div class="nav-btn" id="home-nav">🏠 Home</div>
 <div class="nav-btn">🌐 Proxy</div>
 <div class="nav-btn">🎮 Games</div>
 <div class="nav-btn">📱 Apps</div>
@@ -156,7 +186,8 @@ z-index:20;
 <div class="nav-btn">🥭 Cool Stuff</div>
 <div class="nav-btn">⚙️ Settings</div>
 </div>
-<div class="main">
+
+<div class="main" id="main-ui">
 <div class="logo">Purify</div>
 <div class="subtitle">Freedom for every student out there.</div>
 <div class="search-row">
@@ -178,6 +209,7 @@ z-index:20;
 </div>
 </div>
 </div>
+
 <script>
 const stars=document.getElementById("stars");
 for(let i=0;i<180;i++){
@@ -190,11 +222,13 @@ s.style.height=s.style.width;
 s.style.animationDuration=(15+Math.random()*30)+"s";
 stars.appendChild(s);
 }
+
 const sidebar=document.getElementById("sidebar");
 const edge=document.querySelector(".edge-zone");
 edge.addEventListener("mouseenter",()=>sidebar.classList.add("open"));
 sidebar.addEventListener("mouseleave",()=>sidebar.classList.remove("open"));
 edge.addEventListener("touchstart",()=>sidebar.classList.add("open"));
+
 document.addEventListener("touchstart",(e)=>{
 if(!sidebar.contains(e.target) && !edge.contains(e.target)){
 sidebar.classList.remove("open");
@@ -203,17 +237,36 @@ sidebar.classList.remove("open");
 
 const searchInput = document.querySelector(".search");
 const searchBtn = document.querySelector(".search-btn");
+const proxyView = document.getElementById("proxy-view");
+const closeView = document.getElementById("close-view");
+const mainUi = document.getElementById("main-ui");
+const homeNav = document.getElementById("home-nav");
 
 function launchProxy() {
     let queryValue = searchInput.value.trim();
     if (!queryValue) return;
     
-    window.location.href = "/scram/service?q=" + encodeURIComponent(queryValue);
+    mainUi.style.display = "none";
+    proxyView.style.display = "block";
+    closeView.style.display = "block";
+    
+    proxyView.src = "/scram/service?q=" + encodeURIComponent(queryValue);
 }
+
+function closeProxyWindow() {
+    proxyView.src = "about:blank";
+    proxyView.style.display = "none";
+    closeView.style.display = "none";
+    mainUi.style.display = "flex";
+}
+
 searchBtn.addEventListener("click", launchProxy);
 searchInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") launchProxy();
 });
+
+closeView.addEventListener("click", closeProxyWindow);
+homeNav.addEventListener("click", closeProxyWindow);
 </script>
 </body>
 </html>

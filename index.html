@@ -7,466 +7,76 @@
 <link rel="preconnect" href="https://googleapis.com">
 <link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
-body{
-background:#000;
-color:#fff;
-height:100vh;
-overflow:hidden;
-}
-#stars{
-position:fixed;
-inset:0;
-z-index:-1;
-overflow:hidden;
-}
-.star{
-position:absolute;
-width:3px;
-height:3px;
-background:#fff;
-border-radius:50%;
-opacity:0.8;
-animation:move 25s linear infinite;
-}
-@keyframes move{
-0%{transform:translateX(0);}
-100%{transform:translateX(-30vw);}
-}
-.main{
-height:100vh;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-}
-.logo{
-font-size:9rem;
-font-weight:700;
-text-align:center;
-letter-spacing:-3px;
-background:linear-gradient(180deg,#fff 40%,#444);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-.subtitle{
-margin-top:15px;
-text-align:center;
-font-size:1.1rem;
-color:#aaa;
-letter-spacing:0.5px;
-}
-.search-row{
-margin-top:40px;
-display:flex;
-gap:12px;
-}
-.search{
-width:480px;
-height:64px;
-font-size:1.2rem;
-padding:0 24px;
-border:1px solid #222;
-border-radius:16px;
-outline:none;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
-color:#fff;
-transition:all 0.3s;
-}
-.search:focus{
-border-color:#555;
-background:rgba(255,255,255,0.08);
-}
-.search-btn{
-width:72px;
-height:64px;
-font-size:1.6rem;
-border:none;
-border-radius:16px;
-cursor:pointer;
-background:#fff;
-transition:all 0.2s;
-}
-.search-btn:hover{
-transform:scale(1.03);
-background:#eee;
-}
-.shortcuts{
-display:flex;
-gap:60px;
-margin-top:50px;
-}
-.shortcut{
-display:flex;
-flex-direction:column;
-align-items:center;
-cursor:pointer;
-transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-.shortcut:hover{
-transform:translateY(-5px);
-}
-.icon{
-width:88px;
-height:88px;
-background:rgba(255,255,255,0.04);
-border:1px solid #222;
-border-radius:24px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:2.5rem;
-transition:all 0.2s;
-}
-.shortcut:hover .icon{
-background:rgba(255,255,255,0.08);
-border-color:#444;
-}
-.label{
-margin-top:12px;
-font-size:1rem;
-font-weight:500;
-color:#888;
-transition:all 0.2s;
-}
-.shortcut:hover .label{
-color:#fff;
-}
-.sidebar{
-position:fixed;
-left:-260px;
-top:0;
-width:260px;
-height:100%;
-background:rgba(10,10,10,0.85);
-border-right:1px solid rgba(255,255,255,0.05);
-backdrop-filter:blur(20px);
-transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
-display:flex;
-flex-direction:column;
-padding-top:60px;
-z-index:10;
-}
-.sidebar.open{
-left:0;
-}
-.nav-btn{
-padding:16px 24px;
-font-size:1.1rem;
-font-weight:500;
-color:#aaa;
-cursor:pointer;
-transition:all 0.2s;
-}
-.nav-btn:hover{
-background:rgba(255,255,255,0.04);
-color:#fff;
-padding-left:30px;
-}
-.edge-zone{
-position:fixed;
-left:0;
-top:0;
-width:20px;
-height:100%;
-z-index:20;
-}
-#browser-container{
-position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
-background:#000;
-display:none;
-flex-direction:column;
-z-index:99;
-}
-#tab-bar{
-background:#0d0d0d;
-display:flex;
-align-items:center;
-padding:12px 12px 0 12px;
-gap:6px;
-border-bottom:1px solid rgba(255,255,255,0.05);
-}
-.tab{
-background:#161616;
-color:#666;
-padding:10px 20px;
-border-radius:12px 12px 0 0;
-cursor:pointer;
-display:flex;
-align-items:center;
-gap:12px;
-font-size:0.9rem;
-font-weight:500;
-max-width:160px;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-transition:all 0.2s;
-border:1px solid transparent;
-}
-.tab:hover{
-background:#1c1c1c;
-color:#aaa;
-}
-.tab.active{
-background:#000;
-color:#fff;
-border:1px solid rgba(255,255,255,0.05);
-border-bottom:none;
-}
-.close-tab-btn{
-font-size:0.75rem;
-cursor:pointer;
-color:#666;
-transition:all 0.2s;
-}
-.close-tab-btn:hover{
-color:#ff4444;
-}
-#add-tab-btn{
-background:none;
-border:none;
-color:#888;
-font-size:1.6rem;
-cursor:pointer;
-padding:0 12px;
-margin-bottom:6px;
-transition:all 0.2s;
-}
-#add-tab-btn:hover{
-color:#fff;
-}
-#browser-controls{
-background:#000;
-display:flex;
-padding:10px 12px;
-gap:10px;
-align-items:center;
-border-bottom:1px solid rgba(255,255,255,0.03);
-}
-.control-btn{
-background:#161616;
-border:1px solid rgba(255,255,255,0.03);
-color:#aaa;
-padding:10px 14px;
-border-radius:10px;
-cursor:pointer;
-font-size:1rem;
-transition:all 0.2s;
-}
-.control-btn:hover{
-background:#222;
-color:#fff;
-}
-#browser-url-bar{
-flex:1;
-height:40px;
-border-radius:10px;
-border:1px solid rgba(255,255,255,0.05);
-background:#0d0d0d;
-color:#fff;
-padding:0 16px;
-font-size:0.95rem;
-outline:none;
-transition:all 0.3s;
-}
-#browser-url-bar:focus{
-border-color:#444;
-}
-#frames-viewport{
-flex:1;
-position:relative;
-background:#fff;
-}
-.proxy-frame{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-border:none;
-background:#fff;
-display:none;
-}
-.proxy-frame.active{
-display:block;
-}
-.proxy-frame.tab-fullscreen{
-position:fixed;
-top:0;
-left:0;
-width:100vw;
-height:100vh;
-z-index:9999;
-}
-#exit-fullscreen-btn{
-position:fixed;
-top:20px;
-right:20px;
-z-index:10000;
-background:rgba(0,0,0,0.85);
-color:#fff;
-border:1px solid rgba(255,255,255,0.1);
-padding:12px 20px;
-border-radius:12px;
-cursor:pointer;
-display:none;
-font-size:0.9rem;
-font-weight:600;
-backdrop-filter:blur(10px);
-transition:all 0.2s;
-}
-#exit-fullscreen-btn:hover{
-background:#ff4444;
-border-color:#ff4444;
-}
-#settings-panel{
-position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:520px;
-background:#0d0d0d;
-border:1px solid rgba(255,255,255,0.08);
-border-radius:24px;
-padding:30px;
-z-index:200;
-display:none;
-max-height:80vh;
-overflow-y:auto;
-box-shadow:0 20px 40px rgba(0,0,0,0.5);
-}
-.settings-title{
-font-size:1.6rem;
-font-weight:700;
-margin-bottom:20px;
-letter-spacing:-0.5px;
-}
-.settings-group{
-margin-bottom:20px;
-}
-.settings-label{
-display:block;
-margin-bottom:8px;
-font-size:0.9rem;
-font-weight:500;
-color:#666;
-}
-.settings-input{
-width:100%;
-padding:12px;
-background:#161616;
-border:1px solid rgba(255,255,255,0.04);
-color:#fff;
-border-radius:12px;
-outline:none;
-font-size:0.95rem;
-}
-.settings-textarea{
-width:100%;
-height:90px;
-padding:12px;
-background:#161616;
-border:1px solid rgba(255,255,255,0.04);
-color:#fff;
-border-radius:12px;
-outline:none;
-font-family:monospace;
-resize:none;
-font-size:0.9rem;
-}
-.save-settings-btn{
-background:#fff;
-color:#000;
-border:none;
-padding:12px 24px;
-border-radius:12px;
-cursor:pointer;
-font-weight:600;
-margin-top:10px;
-font-size:0.95rem;
-}
-.ext-toggle{
-display:flex;
-align-items:center;
-justify-content:space-between;
-background:#161616;
-padding:14px;
-border-radius:12px;
-margin-bottom:10px;
-border:1px solid rgba(255,255,255,0.02);
-}
-.bookmark-row{
-display:flex;
-gap:8px;
-margin-bottom:8px;
-}
-#bookmarks-bar{
-background:#050505;
-display:none;
-padding:6px 14px;
-gap:12px;
-border-bottom:1px solid rgba(255,255,255,0.03);
-font-size:0.85rem;
-}
-.bookmark-btn{
-background:none;
-border:none;
-color:#00c3ff;
-cursor:pointer;
-font-weight:500;
-}
-.bookmark-btn:hover {
-text-decoration:underline;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#000;color:#fff;height:100vh;overflow:hidden;}
+#stars{position:fixed;inset:0;z-index:-1;overflow:hidden;}
+.star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;opacity:0.8;animation:move 25s linear infinite;}
+@keyframes move{0%{transform:translateX(0);}100%{transform:translateX(-30vw);}}
+.main{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.logo{font-size:9rem;font-weight:700;text-align:center;letter-spacing:-3px;background:linear-gradient(180deg,#fff 40%,#444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.subtitle{margin-top:15px;text-align:center;font-size:1.1rem;color:#aaa;letter-spacing:0.5px;}
+.search-row{margin-top:40px;display:flex;gap:12px;}
+.search{width:480px;height:64px;font-size:1.2rem;padding:0 24px;border:1px solid #222;border-radius:16px;outline:none;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);color:#fff;transition:all 0.3s;}
+.search:focus{border-color:#555;background:rgba(255,255,255,0.08);}
+.search-btn{width:72px;height:64px;font-size:1.6rem;border:none;border-radius:16px;cursor:pointer;background:#fff;transition:all 0.2s;}
+.search-btn:hover{transform:scale(1.03);background:#eee;}
+.shortcuts{display:flex;gap:60px;margin-top:50px;}
+.shortcut{display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);}
+.shortcut:hover{transform:translateY(-5px);}
+.icon{width:88px;height:88px;background:rgba(255,255,255,0.04);border:1px solid #222;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;transition:all 0.2s;}
+.shortcut:hover .icon{background:rgba(255,255,255,0.08);border-color:#444;}
+.label{margin-top:12px;font-size:1rem;font-weight:500;color:#888;transition:all 0.2s;}
+.shortcut:hover .label{color:#fff;}
+.sidebar{position:fixed;left:-260px;top:0;width:260px;height:100%;background:rgba(10,10,10,0.85);border-right:1px solid rgba(255,255,255,0.05);backdrop-filter:blur(20px);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;padding-top:60px;z-index:10;}
+.sidebar.open{left:0;}.nav-btn{padding:16px 24px;font-size:1.1rem;font-weight:500;color:#aaa;cursor:pointer;transition:all 0.2s;}
+.nav-btn:hover{background:rgba(255,255,255,0.04);color:#fff;padding-left:30px;}.edge-zone{position:fixed;left:0;top:0;width:20px;height:100%;z-index:20;}
+#browser-container{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;display:none;flex-direction:column;z-index:99;}
+#tab-bar{background:#0d0d0d;display:flex;align-items:center;padding:12px 12px 0 12px;gap:6px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.tab{background:#161616;color:#666;padding:10px 20px;border-radius:12px 12px 0 0;cursor:pointer;display:flex;align-items:center;gap:12px;font-size:0.9rem;font-weight:500;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:all 0.2s;border:1px solid transparent;}
+.tab:hover{background:#1c1c1c;color:#aaa;}.tab.active{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.05);border-bottom:none;}
+.close-tab-btn{font-size:0.75rem;cursor:pointer;color:#666;transition:all 0.2s;}.close-tab-btn:hover{color:#ff4444;}
+#add-tab-btn{background:none;border:none;color:#888;font-size:1.6rem;cursor:pointer;padding:0 12px;margin-bottom:6px;transition:all 0.2s;}#add-tab-btn:hover{color:#fff;}
+#browser-controls{background:#000;display:flex;padding:10px 12px;gap:10px;align-items:center;border-bottom:1px solid rgba(255,255,255,0.03);}
+.control-btn{background:#161616;border:1px solid rgba(255,255,255,0.03);color:#aaa;padding:10px 14px;border-radius:10px;cursor:pointer;font-size:1rem;transition:all 0.2s;}
+.control-btn:hover{background:#222;color:#fff;}
+#browser-url-bar{flex:1;height:40px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);background:#0d0d0d;color:#fff;padding:0 16px;font-size:0.95rem;outline:none;transition:all 0.3s;}
+#browser-url-bar:focus{border-color:#444;}#frames-viewport{flex:1;position:relative;background:#fff;}
+.proxy-frame{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#fff;display:none;}
+.proxy-frame.active{display:block;}.proxy-frame.tab-fullscreen{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;}
+#exit-fullscreen-btn{position:fixed;top:20px;right:20px;z-index:10000;background:rgba(0,0,0,0.85);color:#fff;border:1px solid rgba(255,255,255,0.1);padding:12px 20px;border-radius:12px;cursor:pointer;display:none;font-size:0.9rem;font-weight:600;backdrop-filter:blur(10px);transition:all 0.2s;}
+#exit-fullscreen-btn:hover{background:#ff4444;border-color:#ff4444;}
+#settings-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:520px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:30px;z-index:200;display:none;max-height:80vh;overflow-y:auto;box-shadow:0 20px 40px rgba(0,0,0,0.5);}
+.settings-title{font-size:1.6rem;font-weight:700;margin-bottom:20px;letter-spacing:-0.5px;}.settings-group{margin-bottom:20px;}.settings-label{display:block;margin-bottom:8px;font-size:0.9rem;font-weight:500;color:#666;}
+.settings-input{width:100%;padding:12px;background:#161616;border:1px solid rgba(255,255,255,0.04);color:#fff;border-radius:12px;outline:none;font-size:0.95rem;}
+.settings-textarea{width:100%;height:90px;padding:12px;background:#161616;border:1px solid rgba(255,255,255,0.04);color:#fff;border-radius:12px;outline:none;font-family:monospace;resize:none;font-size:0.9rem;}
+.save-settings-btn{background:#fff;color:#000;border:none;padding:12px 24px;border-radius:12px;cursor:pointer;font-weight:600;margin-top:10px;font-size:0.95rem;}
+.ext-toggle{display:flex;align-items:center;justify-content:space-between;background:#161616;padding:14px;border-radius:12px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.02);}
+.bookmark-row{display:flex;gap:80px;margin-top:40px;}
+#bookmarks-bar{background:#050505;display:none;padding:6px 14px;gap:12px;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.85rem;}
+.bookmark-btn{background:none;border:none;color:#00c3ff;cursor:pointer;font-weight:500;}.bookmark-btn:hover{text-decoration:underline;}
 </style>
 </head>
 <body>
-<div id="stars"></div>
-<div class="edge-zone"></div>
-<button id="exit-fullscreen-btn">✕ Exit Fullscreen</button>
+<div id="stars"></div><div class="edge-zone"></div><button id="exit-fullscreen-btn">✕ Exit Fullscreen</button>
 <div id="browser-container">
-    <div id="tab-bar">
-        <div id="tabs-wrapper" style="display:flex;gap:5px;"></div>
-        <button id="add-tab-btn">+</button>
-    </div>
+    <div id="tab-bar"><div id="tabs-wrapper" style="display:flex;gap:5px;"></div><button id="add-tab-btn">+</button></div>
     <div id="browser-controls">
-        <button class="control-btn" id="back-nav-btn">◀</button>
-        <button class="control-btn" id="refresh-nav-btn">⟳</button>
+        <button class="control-btn" id="back-nav-btn">◀</button><button class="control-btn" id="refresh-nav-btn">⟳</button>
         <button class="control-btn" id="add-bookmark-btn" title="Bookmark Page">⭐</button>
         <input id="browser-url-bar" placeholder="Enter URL or search DuckDuckGo...">
         <button class="control-btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
         <button class="control-btn" id="close-browser-btn" style="background:#ff4444; color:#fff;">✕ Close</button>
     </div>
-    <div id="bookmarks-bar"></div>
-    <div id="frames-viewport"></div>
+    <div id="bookmarks-bar"></div><div id="frames-viewport"></div>
 </div>
 <div class="sidebar" id="sidebar">
-    <div class="nav-btn" id="home-menu-btn">🏠 Home</div>
-    <div class="nav-btn" id="proxy-menu-btn">🌐 Proxy</div>
-    <div class="nav-btn">🎮 Games</div>
-    <div class="nav-btn">📱 Apps</div>
-    <div class="nav-btn">🤖 AI</div>
-    <div class="nav-btn">🥭 Cool Stuff</div>
+    <div class="nav-btn" id="home-menu-btn">🏠 Home</div><div class="nav-btn" id="proxy-menu-btn">🌐 Proxy</div>
+    <div class="nav-btn">🎮 Games</div><div class="nav-btn">📱 Apps</div><div class="nav-btn">🤖 AI</div><div class="nav-btn">🥭 Cool Stuff</div>
     <div class="nav-btn" id="settings-menu-btn">⚙️ Extensions & Bookmarks</div>
 </div>
 <div class="main" id="main-ui">
-    <div class="logo">Purify</div>
-    <div class="subtitle">Freedom for every student out there.</div>
-    <div class="search-row">
-        <input class="search" placeholder="Search DuckDuckGo or type URL...">
-        <button class="search-btn">🔍</button>
-    </div>
+    <div class="logo">Purify</div><div class="subtitle">Freedom for every student out there.</div>
+    <div class="search-row"><input class="search" placeholder="Search DuckDuckGo or type URL..."><button class="search-btn">🔍</button></div>
     <div class="shortcuts">
         <div class="shortcut"><div class="icon">🎮</div><div class="label">Games</div></div>
         <div class="shortcut"><div class="icon">📱</div><div class="label">Apps</div></div>
@@ -476,14 +86,8 @@ text-decoration:underline;
 <div id="settings-panel">
     <div class="settings-title">Extensions Marketplace</div>
     <div class="settings-group">
-        <div class="ext-toggle">
-            <span>🚫 Ad-Blocker Script</span>
-            <input type="checkbox" id="ext-adblock">
-        </div>
-        <div class="ext-toggle">
-            <span>🎨 Dark Mode Injector</span>
-            <input type="checkbox" id="ext-dark">
-        </div>
+        <div class="ext-toggle"><span>🚫 Ad-Blocker Script</span><input type="checkbox" id="ext-adblock"></div>
+        <div class="ext-toggle"><span>🎨 Dark Mode Injector</span><input type="checkbox" id="ext-dark"></div>
     </div>
     <div class="settings-group">
         <label class="settings-label">Upload Custom Extension Code (User Script)</label>
@@ -515,21 +119,31 @@ edge.addEventListener("touchstart",()=>sidebar.classList.add("open"));
 document.addEventListener("touchstart",(e)=>{if(!sidebar.contains(e.target)&&!edge.contains(e.target)){sidebar.classList.remove("open");}});
 
 const searchInput=document.querySelector(".search"),searchBtn=document.querySelector(".search-btn"),browserContainer=document.getElementById("browser-container"),tabsWrapper=document.getElementById("tabs-wrapper"),framesViewport=document.getElementById("frames-viewport"),browserUrlBar=document.getElementById("browser-url-bar"),addTabBtn=document.getElementById("add-tab-btn"),mainUi=document.getElementById("main-ui"),settingsPanel=document.getElementById("settings-panel"),bookmarksBar=document.getElementById("bookmarks-bar"),exitFsBtn=document.getElementById("exit-fullscreen-btn");
-let activeTabId=null,tabCount=0;
+let activeTabId=null,tabCount=0, tabUrls={};
 
 function formatUrl(t){
 let e=t.trim();if(!e)return"https://duckduckgo.com";
 e=e.replace(/imtured/g,"").replace(/say/g,"").trim();
+// Fix double protocol loop inputs automatically
+if (e.startsWith('https://https://')) e = e.replace('https://https://', 'https://');
+if (e.startsWith('http://https://')) e = e.replace('http://https://', 'https://');
+if (e.startsWith('https://http://')) e = e.replace('https://http://', 'http://');
+
 if(e.includes(".")&&!e.includes(" ")||e.startsWith("http://")||e.startsWith("https://")){
 if(!e.startsWith("http://")&&!e.startsWith("https://"))e="https://"+e;
 }else{e="https://duckduckgo.com?q="+encodeURIComponent(e);}
-return "/scram/service?url="+encodeURIComponent(e);
+return e;
 }
 
 function createNewTab(t="https://duckduckgo.com"){
-tabCount++;const e="tab-"+tabCount,n=formatUrl(t),a=document.createElement("div");
+tabCount++;const e="tab-"+tabCount, rawTarget=formatUrl(t);
+tabUrls[e] = rawTarget;
+
+const a=document.createElement("div");
 a.className="tab";a.id="btn-"+e;a.innerHTML=`<span>Tab ${tabCount}</span> <span class="close-tab-btn" data-id="${e}">✕</span>`;
-const r=document.createElement("iframe");r.className="proxy-frame";r.id="frame-"+e;r.src=n;
+const r=document.createElement("iframe");r.className="proxy-frame";r.id="frame-"+e;
+r.src="/scram/service?url="+encodeURIComponent(rawTarget);
+
 r.addEventListener("load",()=>{
 try{
 if(document.getElementById("ext-adblock").checked){r.contentWindow.eval("console.log('Ad-blocker active.');");}
@@ -547,17 +161,17 @@ function switchActiveTab(t){
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
 document.querySelectorAll(".proxy-frame").forEach(t=>t.classList.remove("active"));
 const e=document.getElementById("btn-"+t),f=document.getElementById("frame-"+t);
-if(e&&f){e.classList.add("active");f.classList.add("active");activeTabId=t;if(f.src!=="about:blank")browserUrlBar.value=f.src;}
+if(e&&f){e.classList.add("active");f.classList.add("active");activeTabId=t;browserUrlBar.value=tabUrls[t]||"";}
 }
 
 function removeTab(t){
 const e=document.getElementById("btn-"+t),n=document.getElementById("frame-"+t);
-if(e)e.remove();if(n)n.remove();const a=document.querySelectorAll(".tab");
+if(e)e.remove();if(n)n.remove();delete tabUrls[t];const a=document.querySelectorAll(".tab");
 if(a.length===0){closeBrowser();}else if(activeTabId===t){switchActiveTab(a[a.length-1].id.replace("btn-",""));}
 }
 
 function launchBrowser(t){mainUi.style.display="none";browserContainer.style.display="flex";renderBookmarks();createNewTab(t);}
-function closeBrowser(){browserContainer.style.display="none";mainUi.style.display="flex";tabsWrapper.innerHTML="";framesViewport.innerHTML="";activeTabId=null;}
+function closeBrowser(){browserContainer.style.display="none";mainUi.style.display="flex";tabsWrapper.innerHTML="";framesViewport.innerHTML="";activeTabId=null;tabUrls={};}
 
 function renderBookmarks(){
 const saved=JSON.parse(localStorage.getItem("purify_bookmarks")||"[]");
@@ -567,8 +181,9 @@ saved.forEach(b=>{
 const btn=document.createElement("button");btn.className="bookmark-btn";btn.innerText=b.name;
 btn.addEventListener("click",()=>{
 const f=document.getElementById("frame-"+activeTabId);
-if(f){if(b.url.startsWith("javascript:")){try{f.contentWindow.eval(b.url.replace("javascript:",""));}catch(e){}}else{f.src=formatUrl(b.url);}}
-});
+if(f){if(b.url.startsWith("javascript:")){try{f.contentWindow.eval(b.url.replace("javascript:",""));}catch(e){}}else{
+tabUrls[activeTabId]=b.url;browserUrlBar.value=b.url;f.src="/scram/service?url="+encodeURIComponent(formatUrl(b.url));
+}}} );
 bookmarksBar.appendChild(btn);
 });
 }
@@ -581,7 +196,14 @@ document.getElementById("home-menu-btn").addEventListener("click",closeBrowser);
 document.getElementById("proxy-menu-btn").addEventListener("click",()=>launchBrowser("https://duckduckgo.com"));
 document.getElementById("refresh-nav-btn").addEventListener("click",()=>{const t=document.getElementById("frame-"+activeTabId);if(t)t.src=t.src;});
 document.getElementById("back-nav-btn").addEventListener("click",()=>{const t=document.getElementById("frame-"+activeTabId);if(t){try{t.contentWindow.history.back();}catch(e){t.src=t.src;}}});
-browserUrlBar.addEventListener("keydown",t=>{if(t.key==="Enter"){const e=document.getElementById("frame-"+activeTabId);if(e)e.src=formatUrl(browserUrlBar.value);}});
+
+browserUrlBar.addEventListener("keydown",t=>{if(t.key==="Enter"){
+const e=document.getElementById("frame-"+activeTabId);
+if(e){
+let cleanInput=formatUrl(browserUrlBar.value);
+tabUrls[activeTabId]=cleanInput;browserUrlBar.value=cleanInput;
+e.src="/scram/service?url="+encodeURIComponent(cleanInput);
+}}});
 
 document.getElementById("fullscreen-btn").addEventListener("click",()=>{
 const f=document.getElementById("frame-"+activeTabId);
@@ -593,13 +215,11 @@ if(f){f.classList.remove("tab-fullscreen");exitFsBtn.style.display="none";}
 });
 
 document.getElementById("add-bookmark-btn").addEventListener("click",()=>{
-const f=document.getElementById("frame-"+activeTabId);
-if(f){
+const currentUrl=tabUrls[activeTabId]||"https://duckduckgo.com";
 const name=prompt("Enter bookmark name:","New Bookmark");
 if(name){
 const saved=JSON.parse(localStorage.getItem("purify_bookmarks")||"[]");
-saved.push({name:name,url:f.src});localStorage.setItem("purify_bookmarks",JSON.stringify(saved));renderBookmarks();
-}
+saved.push({name:name,url:currentUrl});localStorage.setItem("purify_bookmarks",JSON.stringify(saved));renderBookmarks();
 }
 });
 
@@ -619,7 +239,7 @@ renderBookmarks();settingsPanel.style.display="none";alert("Configurations Appli
 });
 
 window.addEventListener("DOMContentLoaded",()=>{
-document.getElementById("script-input").value=localStorage.getItem("purify_script")||"";
+document.getElementById("script-input").value=localStorage.getItem("purify_script")||";";
 document.getElementById("ext-adblock").checked=localStorage.getItem("purify_ext_adblock")==="true";
 document.getElementById("ext-dark").checked=localStorage.getItem("purify_ext_dark")==="true";
 });

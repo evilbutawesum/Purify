@@ -5,55 +5,436 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Purify</title>
 <link rel="preconnect" href="https://googleapis.com">
-<link href="https://googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Josefin Sans',sans-serif;}
-body{background:#000;color:#fff;height:100vh;overflow:hidden;}
-#stars{position:fixed;inset:0;z-index:-1;overflow:hidden;}
-.star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;opacity:0.8;animation:move 25s linear infinite;}
-@keyframes move{0%{transform:translateX(0);}100%{transform:translateX(-30vw);}}
-.main{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.logo{font-size:11rem;font-weight:700;letter-spacing:-2px;}
-.subtitle{margin-top:18px;font-size:1.2rem;}
-.search-row{margin-top:40px;display:flex;gap:10px;}
-.search{width:480px;height:72px;font-size:1.4rem;padding:0 20px;border:none;border-radius:20px;outline:none;color:#000;}
-.search-btn{width:80px;height:72px;font-size:2rem;border:none;border-radius:20px;cursor:pointer;}
-.shortcuts{display:flex;gap:80px;margin-top:40px;}
-.shortcut{display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:.2s;}
-.shortcut:hover{transform:scale(1.05);}
-.icon{width:100px;height:100px;background:#444;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:3rem;}
-.label{margin-top:10px;font-size:1.2rem;font-weight:600;}
-.sidebar{position:fixed;left:-240px;top:0;width:240px;height:100%;background:rgba(20,20,20,.97);backdrop-filter:blur(10px);transition:.25s ease;display:flex;flex-direction:column;padding-top:60px;z-index:10;}
-.sidebar.open{left:0;}.nav-btn{padding:18px;font-size:1.3rem;cursor:pointer;}.nav-btn:hover{background:rgba(255,255,255,.1);}
-.edge-zone{position:fixed;left:0;top:0;width:20px;height:100%;z-index:20;}
-#browser-container{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#000;display:none;flex-direction:column;z-index:99;}
-#tab-bar{background:#141414;display:flex;align-items:center;padding:10px 10px 0 10px;gap:5px;border-bottom:1px solid #333;}
-.tab{background:#222;color:#aaa;padding:8px 16px;border-radius:10px 10px 0 0;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:.95rem;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.tab.active{background:#000;color:#fff;border:1px solid #333;border-bottom:none;}
-.close-tab-btn{font-size:.8rem;cursor:pointer;color:#ff4444;}
-#add-tab-btn{background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer;padding:0 10px;margin-bottom:5px;}
-#browser-controls{background:#000;display:flex;padding:8px;gap:10px;align-items:center;border-bottom:1px solid #222;}
-.control-btn{background:#222;border:none;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;}
-#browser-url-bar{flex:1;height:36px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;padding:0 12px;font-size:1rem;outline:none;}
-#frames-viewport{flex:1;position:relative;background:#fff;}
-.proxy-frame{position:absolute;top:0;left:0;width:100%;height:100%;border:none;background:#fff;display:none;}
-.proxy-frame.active{display:block;}
-#settings-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:520px;background:#141414;border:1px solid #333;border-radius:20px;padding:25px;z-index:200;display:none;max-height:85vh;overflow-y:auto;}
-.settings-title{font-size:1.8rem;font-weight:700;margin-bottom:15px;}
-.settings-group{margin-bottom:15px;}
-.settings-label{display:block;margin-bottom:5px;font-size:1rem;color:#aaa;}
-.settings-input{width:100%;padding:10px;background:#222;border:1px solid #333;color:#fff;border-radius:10px;outline:none;font-size:1rem;}
-.settings-textarea{width:100%;height:80px;padding:10px;background:#222;border:1px solid #333;color:#fff;border-radius:10px;outline:none;font-family:monospace;resize:none;}
-.save-settings-btn{background:#fff;color:#000;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:700;margin-top:10px;}
-.ext-toggle{display:flex;align-items:center;justify-content:between;background:#222;padding:10px;border-radius:10px;margin-bottom:8px;border:1px solid #333;}
-.bookmark-row{display:flex;gap:5px;margin-bottom:5px;}
-#bookmarks-bar{background:#0a0a0a;display:none;padding:5px 12px;gap:10px;border-bottom:1px solid #222;font-size:0.9rem;}
-.bookmark-btn{background:none;border:none;color:#00c3ff;cursor:pointer;}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+body{
+background:#000;
+color:#fff;
+height:100vh;
+overflow:hidden;
+}
+#stars{
+position:fixed;
+inset:0;
+z-index:-1;
+overflow:hidden;
+}
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:#fff;
+border-radius:50%;
+opacity:0.8;
+animation:move 25s linear infinite;
+}
+@keyframes move{
+0%{transform:translateX(0);}
+100%{transform:translateX(-30vw);}
+}
+.main{
+height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+}
+.logo{
+font-size:9rem;
+font-weight:700;
+text-align:center;
+letter-spacing:-3px;
+background:linear-gradient(180deg,#fff 40%,#444);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.subtitle{
+margin-top:15px;
+text-align:center;
+font-size:1.1rem;
+color:#aaa;
+letter-spacing:0.5px;
+}
+.search-row{
+margin-top:40px;
+display:flex;
+gap:12px;
+}
+.search{
+width:480px;
+height:64px;
+font-size:1.2rem;
+padding:0 24px;
+border:1px solid #222;
+border-radius:16px;
+outline:none;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(10px);
+color:#fff;
+transition:all 0.3s;
+}
+.search:focus{
+border-color:#555;
+background:rgba(255,255,255,0.08);
+}
+.search-btn{
+width:72px;
+height:64px;
+font-size:1.6rem;
+border:none;
+border-radius:16px;
+cursor:pointer;
+background:#fff;
+transition:all 0.2s;
+}
+.search-btn:hover{
+transform:scale(1.03);
+background:#eee;
+}
+.shortcuts{
+display:flex;
+gap:60px;
+margin-top:50px;
+}
+.shortcut{
+display:flex;
+flex-direction:column;
+align-items:center;
+cursor:pointer;
+transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.shortcut:hover{
+transform:translateY(-5px);
+}
+.icon{
+width:88px;
+height:88px;
+background:rgba(255,255,255,0.04);
+border:1px solid #222;
+border-radius:24px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:2.5rem;
+transition:all 0.2s;
+}
+.shortcut:hover .icon{
+background:rgba(255,255,255,0.08);
+border-color:#444;
+}
+.label{
+margin-top:12px;
+font-size:1rem;
+font-weight:500;
+color:#888;
+transition:all 0.2s;
+}
+.shortcut:hover .label{
+color:#fff;
+}
+.sidebar{
+position:fixed;
+left:-260px;
+top:0;
+width:260px;
+height:100%;
+background:rgba(10,10,10,0.85);
+border-right:1px solid rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+display:flex;
+flex-direction:column;
+padding-top:60px;
+z-index:10;
+}
+.sidebar.open{
+left:0;
+}
+.nav-btn{
+padding:16px 24px;
+font-size:1.1rem;
+font-weight:500;
+color:#aaa;
+cursor:pointer;
+transition:all 0.2s;
+}
+.nav-btn:hover{
+background:rgba(255,255,255,0.04);
+color:#fff;
+padding-left:30px;
+}
+.edge-zone{
+position:fixed;
+left:0;
+top:0;
+width:20px;
+height:100%;
+z-index:20;
+}
+#browser-container{
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+background:#000;
+display:none;
+flex-direction:column;
+z-index:99;
+}
+#tab-bar{
+background:#0d0d0d;
+display:flex;
+align-items:center;
+padding:12px 12px 0 12px;
+gap:6px;
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.tab{
+background:#161616;
+color:#666;
+padding:10px 20px;
+border-radius:12px 12px 0 0;
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:12px;
+font-size:0.9rem;
+font-weight:500;
+max-width:160px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+transition:all 0.2s;
+border:1px solid transparent;
+}
+.tab:hover{
+background:#1c1c1c;
+color:#aaa;
+}
+.tab.active{
+background:#000;
+color:#fff;
+border:1px solid rgba(255,255,255,0.05);
+border-bottom:none;
+}
+.close-tab-btn{
+font-size:0.75rem;
+cursor:pointer;
+color:#666;
+transition:all 0.2s;
+}
+.close-tab-btn:hover{
+color:#ff4444;
+}
+#add-tab-btn{
+background:none;
+border:none;
+color:#888;
+font-size:1.6rem;
+cursor:pointer;
+padding:0 12px;
+margin-bottom:6px;
+transition:all 0.2s;
+}
+#add-tab-btn:hover{
+color:#fff;
+}
+#browser-controls{
+background:#000;
+display:flex;
+padding:10px 12px;
+gap:10px;
+align-items:center;
+border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.control-btn{
+background:#161616;
+border:1px solid rgba(255,255,255,0.03);
+color:#aaa;
+padding:10px 14px;
+border-radius:10px;
+cursor:pointer;
+font-size:1rem;
+transition:all 0.2s;
+}
+.control-btn:hover{
+background:#222;
+color:#fff;
+}
+#browser-url-bar{
+flex:1;
+height:40px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.05);
+background:#0d0d0d;
+color:#fff;
+padding:0 16px;
+font-size:0.95rem;
+outline:none;
+transition:all 0.3s;
+}
+#browser-url-bar:focus{
+border-color:#444;
+}
+#frames-viewport{
+flex:1;
+position:relative;
+background:#fff;
+}
+.proxy-frame{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+border:none;
+background:#fff;
+display:none;
+}
+.proxy-frame.active{
+display:block;
+}
+.proxy-frame.tab-fullscreen{
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+z-index:9999;
+}
+#exit-fullscreen-btn{
+position:fixed;
+top:20px;
+right:20px;
+z-index:10000;
+background:rgba(0,0,0,0.85);
+color:#fff;
+border:1px solid rgba(255,255,255,0.1);
+padding:12px 20px;
+border-radius:12px;
+cursor:pointer;
+display:none;
+font-size:0.9rem;
+font-weight:600;
+backdrop-filter:blur(10px);
+transition:all 0.2s;
+}
+#exit-fullscreen-btn:hover{
+background:#ff4444;
+border-color:#ff4444;
+}
+#settings-panel{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:520px;
+background:#0d0d0d;
+border:1px solid rgba(255,255,255,0.08);
+border-radius:24px;
+padding:30px;
+z-index:200;
+display:none;
+max-height:80vh;
+overflow-y:auto;
+box-shadow:0 20px 40px rgba(0,0,0,0.5);
+}
+.settings-title{
+font-size:1.6rem;
+font-weight:700;
+margin-bottom:20px;
+letter-spacing:-0.5px;
+}
+.settings-group{
+margin-bottom:20px;
+}
+.settings-label{
+display:block;
+margin-bottom:8px;
+font-size:0.9rem;
+font-weight:500;
+color:#666;
+}
+.settings-input{
+width:100%;
+padding:12px;
+background:#161616;
+border:1px solid rgba(255,255,255,0.04);
+color:#fff;
+border-radius:12px;
+outline:none;
+font-size:0.95rem;
+}
+.settings-textarea{
+width:100%;
+height:90px;
+padding:12px;
+background:#161616;
+border:1px solid rgba(255,255,255,0.04);
+color:#fff;
+border-radius:12px;
+outline:none;
+font-family:monospace;
+resize:none;
+font-size:0.9rem;
+}
+.save-settings-btn{
+background:#fff;
+color:#000;
+border:none;
+padding:12px 24px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+margin-top:10px;
+font-size:0.95rem;
+}
+.ext-toggle{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#161616;
+padding:14px;
+border-radius:12px;
+margin-bottom:10px;
+border:1px solid rgba(255,255,255,0.02);
+}
+.bookmark-row{
+display:flex;
+gap:8px;
+margin-bottom:8px;
+}
+#bookmarks-bar{
+background:#050505;
+display:none;
+padding:6px 14px;
+gap:12px;
+border-bottom:1px solid rgba(255,255,255,0.03);
+font-size:0.85rem;
+}
+.bookmark-btn{
+background:none;
+border:none;
+color:#00c3ff;
+cursor:pointer;
+font-weight:500;
+}
+.bookmark-btn:hover {
+text-decoration:underline;
+}
 </style>
 </head>
 <body>
 <div id="stars"></div>
 <div class="edge-zone"></div>
+<button id="exit-fullscreen-btn">✕ Exit Fullscreen</button>
 <div id="browser-container">
     <div id="tab-bar">
         <div id="tabs-wrapper" style="display:flex;gap:5px;"></div>
@@ -65,7 +446,7 @@ body{background:#000;color:#fff;height:100vh;overflow:hidden;}
         <button class="control-btn" id="add-bookmark-btn" title="Bookmark Page">⭐</button>
         <input id="browser-url-bar" placeholder="Enter URL or search DuckDuckGo...">
         <button class="control-btn" id="fullscreen-btn" title="Toggle Fullscreen">⛶</button>
-        <button class="control-btn" id="close-browser-btn" style="background:#ff4444;">✕ Close</button>
+        <button class="control-btn" id="close-browser-btn" style="background:#ff4444; color:#fff;">✕ Close</button>
     </div>
     <div id="bookmarks-bar"></div>
     <div id="frames-viewport"></div>
@@ -108,16 +489,16 @@ body{background:#000;color:#fff;height:100vh;overflow:hidden;}
         <label class="settings-label">Upload Custom Extension Code (User Script)</label>
         <textarea class="settings-textarea" id="script-input" placeholder="console.log('My custom extension loaded!');"></textarea>
     </div>
-    <div class="settings-title" style="font-size:1.4rem; margin-top:15px;">Bookmarklet Manager</div>
+    <div class="settings-title" style="font-size:1.3rem; margin-top:20px;">Bookmarklet Manager</div>
     <div class="settings-group">
-        <label class="settings-label">Save Bookmark/Bookmarklet (Name & URL/Code)</label>
+        <label class="settings-label">Save Quick Bookmarklet Link</label>
         <div class="bookmark-row">
             <input class="settings-input" id="bm-name" placeholder="Name" style="width:30%;">
             <input class="settings-input" id="bm-url" placeholder="https://... or javascript:..." style="width:70%;">
         </div>
     </div>
     <button class="save-settings-btn" id="save-config-btn">Save & Apply</button>
-    <button class="save-settings-btn" id="close-config-btn" style="background:none;color:#ff4444;border:1px solid #ff4444;">Close</button>
+    <button class="save-settings-btn" id="close-config-btn" style="background:none;color:#ff4444;border:1px solid #ff4444;margin-left:10px;">Close</button>
 </div>
 <script>
 const stars=document.getElementById("stars");
@@ -133,7 +514,7 @@ sidebar.addEventListener("mouseleave",()=>sidebar.classList.remove("open"));
 edge.addEventListener("touchstart",()=>sidebar.classList.add("open"));
 document.addEventListener("touchstart",(e)=>{if(!sidebar.contains(e.target)&&!edge.contains(e.target)){sidebar.classList.remove("open");}});
 
-const searchInput=document.querySelector(".search"),searchBtn=document.querySelector(".search-btn"),browserContainer=document.getElementById("browser-container"),tabsWrapper=document.getElementById("tabs-wrapper"),framesViewport=document.getElementById("frames-viewport"),browserUrlBar=document.getElementById("browser-url-bar"),addTabBtn=document.getElementById("add-tab-btn"),mainUi=document.getElementById("main-ui"),settingsPanel=document.getElementById("settings-panel"),bookmarksBar=document.getElementById("bookmarks-bar");
+const searchInput=document.querySelector(".search"),searchBtn=document.querySelector(".search-btn"),browserContainer=document.getElementById("browser-container"),tabsWrapper=document.getElementById("tabs-wrapper"),framesViewport=document.getElementById("frames-viewport"),browserUrlBar=document.getElementById("browser-url-bar"),addTabBtn=document.getElementById("add-tab-btn"),mainUi=document.getElementById("main-ui"),settingsPanel=document.getElementById("settings-panel"),bookmarksBar=document.getElementById("bookmarks-bar"),exitFsBtn=document.getElementById("exit-fullscreen-btn");
 let activeTabId=null,tabCount=0;
 
 function formatUrl(t){
@@ -142,7 +523,7 @@ e=e.replace(/imtured/g,"").replace(/say/g,"").trim();
 if(e.includes(".")&&!e.includes(" ")||e.startsWith("http://")||e.startsWith("https://")){
 if(!e.startsWith("http://")&&!e.startsWith("https://"))e="https://"+e;
 }else{e="https://duckduckgo.com?q="+encodeURIComponent(e);}
-return e;
+return "/scram/service?url="+encodeURIComponent(e);
 }
 
 function createNewTab(t="https://duckduckgo.com"){
@@ -151,7 +532,7 @@ a.className="tab";a.id="btn-"+e;a.innerHTML=`<span>Tab ${tabCount}</span> <span 
 const r=document.createElement("iframe");r.className="proxy-frame";r.id="frame-"+e;r.src=n;
 r.addEventListener("load",()=>{
 try{
-if(document.getElementById("ext-adblock").checked){r.contentWindow.eval("console.log('Ad-blocker extension active.');");}
+if(document.getElementById("ext-adblock").checked){r.contentWindow.eval("console.log('Ad-blocker active.');");}
 if(document.getElementById("ext-dark").checked){r.contentWindow.eval("document.body.style.backgroundColor='#111'; document.body.style.color='#fff';");}
 const t=localStorage.getItem("purify_script");if(t)r.contentWindow.eval(t);
 }catch(err){}
@@ -192,7 +573,7 @@ bookmarksBar.appendChild(btn);
 });
 }
 
-searchBtn.addEventListener("click", Sund=>launchBrowser(searchInput.value));
+searchBtn.addEventListener("click",()=>launchBrowser(searchInput.value));
 searchInput.addEventListener("keydown",t=>{if(t.key==="Enter")launchBrowser(searchInput.value);});
 addTabBtn.addEventListener("click",()=>createNewTab("https://duckduckgo.com"));
 document.getElementById("close-browser-btn").addEventListener("click",closeBrowser);
@@ -203,7 +584,12 @@ document.getElementById("back-nav-btn").addEventListener("click",()=>{const t=do
 browserUrlBar.addEventListener("keydown",t=>{if(t.key==="Enter"){const e=document.getElementById("frame-"+activeTabId);if(e)e.src=formatUrl(browserUrlBar.value);}});
 
 document.getElementById("fullscreen-btn").addEventListener("click",()=>{
-if(!document.fullscreenElement){browserContainer.requestFullscreen();}else{document.exitFullscreen();}
+const f=document.getElementById("frame-"+activeTabId);
+if(f){f.classList.add("tab-fullscreen");exitFsBtn.style.display="block";}
+});
+exitFsBtn.addEventListener("click",()=>{
+const f=document.getElementById("frame-"+activeTabId);
+if(f){f.classList.remove("tab-fullscreen");exitFsBtn.style.display="none";}
 });
 
 document.getElementById("add-bookmark-btn").addEventListener("click",()=>{

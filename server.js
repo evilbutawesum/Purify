@@ -30,7 +30,6 @@ app.get('/scram/service', async (req, res) => {
 
         targetUrl = targetUrl.trim();
 
-        // Handle raw phrases and turn them into DuckDuckGo queries automatically
         if (!targetUrl.includes('.') || targetUrl.includes(' ') || !targetUrl.startsWith('http')) {
             targetUrl = 'https://duckduckgo.com' + encodeURIComponent(targetUrl);
         }
@@ -40,28 +39,35 @@ app.get('/scram/service', async (req, res) => {
             url: targetUrl,
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept': '*/*',
                 'Accept-Language': 'en-US,en;q=0.9',
                 'Referer': 'https://duckduckgo.com'
             }
         });
 
-        // If it's a webpage, inject the base tag to redirect internal paths automatically
-        if (response.headers['content-type'] && response.headers['content-type'].includes('text/html')) {
+        let contentType = response.headers['content-type'] || '';
+
+        if (contentType.includes('text/html')) {
             let htmlData = response.data;
             const parsedUrl = new URL(targetUrl);
-            const baseUrl = parsedUrl.protocol + '//' + parsedUrl.hostname;
-            
-            // Injects a base element at the top of the head so clicked links know where to route
-            const baseTag = `<head><base href="${baseUrl}/">`;
+            const originUrl = parsedUrl.protocol + '//' + parsedUrl.hostname;
+
+            // Step 1: Inject Base Tag for relative resource tracking fallback
+            const baseTag = `<head><base href="${originUrl}/">`;
             htmlData = htmlData.replace('<head>', baseTag);
-            
+
+            // Step 2: Dynamically rewrite links, styles, forms, and scripts to route securely back through our proxy handler path
+            const rewriteRegex = /(href|src|action)=["'](?!https?:\/\/|\/\/)([^"']+)["']/g;
+            htmlData = htmlData.replace(rewriteRegex, (match, attribute, relativePath) => {
+                let absoluteUrl = relativePath.startsWith('/') ? originUrl + relativePath : originUrl + '/' + relativePath;
+                return `${attribute}="/scram/service?url=${encodeURIComponent(absoluteUrl)}"`;
+            });
+
             res.send(htmlData);
         } else {
-            // If it's an asset or image, route the raw stream
-            const alternativeStream = await axios({ method: 'get', url: targetUrl, responseType: 'stream' });
-            res.writeHead(alternativeStream.status, alternativeStream.headers);
-            alternativeStream.data.pipe(res);
+            // Forward clean media, stylesheet, or scripting content delivery pipelines
+            res.setHeader('Content-Type', contentType);
+            res.send(response.data);
         }
     } catch (err) {
         res.status(500).send("Proxy transmission error: " + err.message);

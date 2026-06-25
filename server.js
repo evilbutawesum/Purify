@@ -30,18 +30,18 @@ app.get('/scram/service', async (req, res) => {
 
         targetUrl = targetUrl.trim();
 
+        // Safe query routing fallback engine
         if (!targetUrl.includes('.') || targetUrl.includes(' ') || !targetUrl.startsWith('http')) {
             targetUrl = 'https://duckduckgo.com' + encodeURIComponent(targetUrl);
         }
 
-        // Fetching with arraybuffer ensures stylesheets, scripts, and binaries do not break
         const response = await axios({
             method: 'get',
             url: targetUrl,
             responseType: 'arraybuffer',
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Accept': '*/*',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;css/*,image/*,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.9',
                 'Referer': 'https://duckduckgo.com'
             },
@@ -52,13 +52,15 @@ app.get('/scram/service', async (req, res) => {
         res.setHeader('Content-Type', contentType);
 
         if (contentType.includes('text/html')) {
-            let htmlData = response.data.toString('utf8');
+            let htmlData = Buffer.from(response.data).toString('utf8');
             const parsedUrl = new URL(targetUrl);
             const originUrl = parsedUrl.protocol + '//' + parsedUrl.hostname;
 
+            // Inject Base Tag safely inside the document head
             const baseTag = `<head><base href="${originUrl}/">`;
             htmlData = htmlData.replace('<head>', baseTag);
 
+            // Re-write matching relative paths to map cleanly back through our proxy service handler
             const rewriteRegex = /(href|src|action)=["'](?!https?:\/\/|\/\/)([^"']+)["']/g;
             htmlData = htmlData.replace(rewriteRegex, (match, attribute, relativePath) => {
                 let absoluteUrl = relativePath.startsWith('/') ? originUrl + relativePath : originUrl + '/' + relativePath;
@@ -67,7 +69,7 @@ app.get('/scram/service', async (req, res) => {
 
             res.send(htmlData);
         } else {
-            // Send raw binary array buffers directly so the browser compiles stylesheets and graphics smoothly
+            // Send binary raw buffer data straight out so the browser maps styles and script blocks perfectly
             res.send(response.data);
         }
     } catch (err) {

@@ -30,12 +30,11 @@ app.get('/scram/service', async (req, res) => {
 
         targetUrl = targetUrl.trim();
 
-        // Handle raw text phrases and auto-route them into DuckDuckGo queries smoothly
         if (!targetUrl.includes('.') || targetUrl.includes(' ') || !targetUrl.startsWith('http')) {
             targetUrl = 'https://duckduckgo.com' + encodeURIComponent(targetUrl);
         }
 
-        // Fetching with arraybuffer ensures raw layout file binaries remain completely unbroken
+        // Fetching with arraybuffer ensures stylesheets, scripts, and binaries do not break
         const response = await axios({
             method: 'get',
             url: targetUrl,
@@ -53,16 +52,13 @@ app.get('/scram/service', async (req, res) => {
         res.setHeader('Content-Type', contentType);
 
         if (contentType.includes('text/html')) {
-            // Convert the arraybuffer back into a readable text string for processing
             let htmlData = response.data.toString('utf8');
             const parsedUrl = new URL(targetUrl);
             const originUrl = parsedUrl.protocol + '//' + parsedUrl.hostname;
 
-            // Inject Base Tag framework
             const baseTag = `<head><base href="${originUrl}/">`;
             htmlData = htmlData.replace('<head>', baseTag);
 
-            // Dynamically translate all asset routing paths to utilize our local proxy handler
             const rewriteRegex = /(href|src|action)=["'](?!https?:\/\/|\/\/)([^"']+)["']/g;
             htmlData = htmlData.replace(rewriteRegex, (match, attribute, relativePath) => {
                 let absoluteUrl = relativePath.startsWith('/') ? originUrl + relativePath : originUrl + '/' + relativePath;
@@ -71,7 +67,7 @@ app.get('/scram/service', async (req, res) => {
 
             res.send(htmlData);
         } else {
-            // Deliver unbroken raw media assets, stylesheet frameworks, or scripting blocks directly
+            // Send raw binary array buffers directly so the browser compiles stylesheets and graphics smoothly
             res.send(response.data);
         }
     } catch (err) {
